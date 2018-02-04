@@ -15,42 +15,58 @@ const doctorTypeRefs = ref.child('doctorType');
 const doctorRef = doctorTypeRefs.child('doctor');
 const nurseRef = doctorTypeRefs.child('nurse');
 const nurseAssistantRef = doctorTypeRefs.child('nurseAssistant');
-// Create a new ref and save data to it in one step
-nurseRef.set({
-  room: '300',
-  name: 'Meet Patel',
-  fallrisk: '3',
-  requestType: 'Poop',
-  status: 'Open',
-});
-
-doctorRef.set({
-  room301: {
-    name: 'Chris Wong',
-    fallrisk: '3',
-    requestType: 'Emergency',
-    status: 'Open',
-  },
-});
 
 // const data = [{ item: 'get milk' }, { item: 'walk dog' }, { item: 'get good son' }];
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 module.exports = (app) => {
   app.post('/patientRequest/', urlencodedParser, (req, res) => {
-    const requestType = req.body.type;
-    req.body.status = 'open';
+    const requestBody = JSON.parse(Object.keys(req.body)[0]);
+    console.log(requestBody);
+    const requestType = requestBody.type;
+    requestBody.status = 'open';
     if (requestType === 'food' || requestType === 'poop' || requestType === 'happy') {
-      nurseAssistantRef.push(req.body);
+      nurseAssistantRef.push(requestBody);
     } else if (requestType === 'medicine' || requestType === 'custom') {
-      nurseRef.push(req.body);
+      nurseRef.push(requestBody);
     } else if (requestType === 'emergency') {
-      doctorRef.push(req.body);
+      doctorRef.push(requestBody);
     }
+    res.send(200);
   });
 
-  app.delete('/todo/:item', (req, res) => {
-
+  app.delete('/patientRequest/', urlencodedParser, (req, res) => {
+    const requestBody = JSON.parse(Object.keys(req.body)[0]);
+    console.log('del'+ requestBody);
+    const requestType = requestBody.type;
+    const roomNum = requestBody.room;
+    requestBody.status = 'open';
+    if (requestType === 'food' || requestType === 'poop' || requestType === 'happy') {
+      nurseAssistantRef.once('value', function(snapshot){
+        snapshot.forEach(function(child){
+            if(child.val().room === roomNum && child.val().type === requestType){
+              nurseAssistantRef.child(child.key).remove();
+            }
+        });
+    });
+    } else if (requestType === 'medicine' || requestType === 'custom') {
+      nurseRef.once('value', function(snapshot){
+        snapshot.forEach(function(child){
+            if(child.val().room === roomNum && child.val().type === requestType){
+              nurseRef.child(child.key).remove();
+            }
+        });
+    });
+    } else if (requestType === 'emergency') {
+      doctorRef.once('value', function(snapshot){
+        snapshot.forEach(function(child){
+            if(child.val().room === roomNum && child.val().type === requestType){
+              doctorRef.child(child.key).remove();
+            }
+        });
+      });
+    }
+    res.send(200);
   });
 };
 

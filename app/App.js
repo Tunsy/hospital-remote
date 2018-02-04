@@ -95,24 +95,24 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.container}>
-          <View style={{flex: 4, alignItems: 'center', justifyContent: 'space-between'}}>
-            <RequestButton iconName='warning'/>
-            <RequestButton iconName='chat'/>
-            <RequestButton iconName='live-help'/>
-          </View>
-          <View style={{flex: 3}}>
-            <RequestButton iconName='local-hospital'/>
-            <RequestButton iconName='local-dining'/>
-            <RequestButton iconName='hotel'/>
-          </View> 
-        </View>
-        {/* <View style={styles.logo}>
+        <View style={styles.logo}>
             <Image
-            style={{width: 150, height: 58}}
+            style={{width: 300, height: 100}}
             source={{uri: 'https://imgur.com/RbOzeZD.png'}}
           />
-        </View> */}
+        </View> 
+        <View style={styles.logo}>
+            <RequestButton iconName='warning'/>
+            <RequestButton iconName='chat'/>
+        </View>
+        <View style={styles.logo}>
+            <RequestButton iconName='live-help'/>
+            <RequestButton iconName='local-hospital'/>
+        </View>
+        <View style={styles.logo}>
+            <RequestButton iconName='local-dining'/>
+            <RequestButton iconName='hotel'/>
+        </View> 
       </View>
     );
   }
@@ -121,18 +121,18 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 2,
-    flexDirection: 'row',
     backgroundColor: '#2980b9',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   logo: {
     flex: 2,
     backgroundColor: '#2980b9',
     alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   requestButton: {
-    flex: 2,
+    flex: 1,
+    width: 50,
+    height: 50
   },
 });
